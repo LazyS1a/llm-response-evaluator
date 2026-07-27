@@ -37,16 +37,7 @@ Skill 负责依据规则判断回答质量；确定性的 Python 脚本负责格
 
 ## EvalFlow Web 工作台
 
-在线体验：<https://evalflow-llm-evaluator.streamlit.app>
-
-本地运行：
-
-```powershell
-python -m pip install -r requirements.txt
-python -m streamlit run streamlit_app.py
-```
-
-打开 `http://localhost:8501` 后可使用：
+**在线体验**：[打开 EvalFlow](https://evalflow-llm-evaluator.streamlit.app)
 
 - **单条评测**：加载已人工复核的天气学案例，或填写自定义问题、回答和参考答案。
 - **批量分析**：读取 JSON / JSONL，查看维度均分、通过数量、错误分布和低分案例。
@@ -54,6 +45,18 @@ python -m streamlit run streamlit_app.py
 - **结果导出**：下载结构化 JSON、汇总 JSON、Markdown 报告和复核数据集。
 
 内置评测只作为已人工复核的界面演示，不调用真实模型 API，也不宣称模型效果。
+
+<details>
+<summary>本地开发运行</summary>
+
+```powershell
+python -m pip install -r requirements.txt
+python -m streamlit run streamlit_app.py
+```
+
+启动后按终端显示的本地地址访问。
+
+</details>
 
 ## 核心能力
 
@@ -158,6 +161,8 @@ python skills/llm-response-evaluator/scripts/compare_prompt_versions.py `
 </details>
 
 ## 在 Codex 中使用
+
+Skill 入口文件：[skills/llm-response-evaluator/SKILL.md](skills/llm-response-evaluator/SKILL.md)
 
 将 `skills/llm-response-evaluator` 复制到个人 Skills 目录并重启 Codex，然后输入：
 
