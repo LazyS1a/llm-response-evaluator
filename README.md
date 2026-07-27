@@ -1,12 +1,16 @@
 # LLM Response Evaluator
 
 [![Tests](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml/badge.svg)](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml)
-[![Version](https://img.shields.io/badge/version-v0.2.1-2F7D55)](https://github.com/LazyS1a/llm-response-evaluator/blob/main/CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.2.2-2F7D55)](https://github.com/LazyS1a/llm-response-evaluator/blob/main/CHANGELOG.md)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-EvalFlow-087F78)](https://evalflow-llm-evaluator.streamlit.app)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
 
-面向 AI 训练师、LLM 评测和 AI 产品测试场景的评测工具。它将“这段回答好不好”转化为可解释、可校验、可批量统计的结构化流程，并提供可操作的 Streamlit 人工复核工作台。skill版本也提供使用
+面向 AI 训练师、LLM 评测和 AI 产品测试场景的评测工具。它将“这段回答好不好”转化为可解释、可校验、可批量统计的结构化流程，并提供可操作的 Streamlit 人工复核工作台与可安装的 Codex Skill。
+
+<p align="center">
+  <img src="docs/screenshots/evalflow-workflow.gif" alt="EvalFlow 单条评测、批量分析与人工复核操作演示" width="100%">
+</p>
 
 ## 30 秒速览
 
@@ -48,6 +52,18 @@ Skill 负责依据规则判断回答质量；确定性的 Python 脚本负责格
 内置评测只作为已人工复核的界面演示，不调用真实模型 API，也不宣称模型效果。
 
 <details>
+<summary>查看桌面端与移动端截图</summary>
+
+<table>
+  <tr>
+    <td width="72%"><img src="docs/screenshots/evalflow-desktop.png" alt="EvalFlow 桌面端"></td>
+    <td width="28%"><img src="docs/screenshots/evalflow-mobile.png" alt="EvalFlow 移动端"></td>
+  </tr>
+</table>
+
+</details>
+
+<details>
 <summary>本地开发运行</summary>
 
 ```powershell
@@ -80,7 +96,7 @@ python -m streamlit run streamlit_app.py
 
 ## 版本与更新
 
-- 当前版本：**v0.2.1**
+- 当前版本：**v0.2.2**
 - 完整变更记录：[CHANGELOG.md](CHANGELOG.md)
 - 版本号遵循语义化版本：新增兼容功能升级次版本，破坏性变更升级主版本。
 
@@ -95,6 +111,8 @@ llm-response-evaluator/
 ├── assets/evalflow-mark.png
 ├── app_core.py
 ├── streamlit_app.py
+├── docs/
+│   └── screenshots/
 ├── requirements.txt
 ├── skills/llm-response-evaluator/
 │   ├── SKILL.md

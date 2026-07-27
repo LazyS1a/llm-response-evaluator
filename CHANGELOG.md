@@ -2,6 +2,22 @@
 
 本项目采用[语义化版本](https://semver.org/lang/zh-CN/)记录 Skill、评测工具链与 EvalFlow Web 工作台的重要变化。
 
+## [0.2.2] - 2026-07-28
+
+### 新增
+
+- EvalFlow 桌面端、移动端成品截图和三工作区操作演示 GIF。
+
+### 变更
+
+- README 首屏增加产品演示，并补充桌面端与移动端截图。
+- 优化项目简介中的 Codex Skill 表述。
+
+### 兼容性
+
+- 应用功能、评分规则、复核逻辑、数据结构和导出格式保持不变。
+- 自动测试仍为 30 项。
+
 ## [0.2.1] - 2026-07-28
 
 ### 变更
@@ -49,6 +65,7 @@
 - Prompt V1 / V2 模板、20 条成对模拟输出和对比报告。
 - 21 项自动测试及 GitHub Actions。
 
+[0.2.2]: https://github.com/LazyS1a/llm-response-evaluator/compare/v0.2.1...v0.2.2
 [0.2.1]: https://github.com/LazyS1a/llm-response-evaluator/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/LazyS1a/llm-response-evaluator/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/LazyS1a/llm-response-evaluator/tree/v0.1.0
