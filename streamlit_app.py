@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from html import escape
 import json
 from pathlib import Path
 from typing import Any
@@ -26,14 +27,32 @@ from app_core import (
 
 
 ROOT = Path(__file__).resolve().parent
+ASSETS_DIR = ROOT / "assets"
+BRAND_MARK_PATH = ASSETS_DIR / "evalflow-mark.png"
 STEM_CASES_PATH = ROOT / "data" / "stem_cases.jsonl"
 STEM_EVALUATIONS_PATH = ROOT / "data" / "stem_draft_evaluations.jsonl"
 SAMPLE_EVALUATIONS_PATH = ROOT / "data" / "sample_evaluations.jsonl"
+APP_VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+
+DOMAIN_LABELS = {
+    "finite_difference": "有限差分",
+    "temperature_humidity": "温湿参数",
+    "wind_kinematics": "风场运动学",
+    "velocity_potential_streamfunction": "速度势与流函数",
+    "atmospheric_moisture": "大气水汽",
+    "atmospheric_stability": "大气稳定度",
+}
+
+DIFFICULTY_LABELS = {
+    "basic": "基础",
+    "intermediate": "进阶",
+    "advanced": "高级",
+}
 
 
 st.set_page_config(
     page_title="EvalFlow",
-    page_icon="E",
+    page_icon=str(BRAND_MARK_PATH),
     layout="wide",
     initial_sidebar_state="auto",
 )
@@ -42,35 +61,89 @@ st.markdown(
     """
     <style>
     :root {
-        --ink: #18232b;
-        --muted: #64727c;
-        --line: #d9e1e5;
-        --panel: #f7f9fa;
+        --ink: #172229;
+        --ink-soft: #35434b;
+        --muted: #687780;
+        --line: #d8e0e3;
+        --line-strong: #bcc9ce;
+        --panel: #f6f8f8;
+        --panel-strong: #eef3f2;
         --teal: #087f78;
-        --coral: #c8553d;
+        --teal-dark: #05645f;
+        --coral: #d15d46;
         --green: #2f7d55;
+        --blue: #2c6485;
     }
     .stApp {
         background: #ffffff;
         color: var(--ink);
     }
-    .block-container {
-        max-width: 1320px;
-        padding-top: 2rem;
-        padding-bottom: 3rem;
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    #MainMenu {
+        display: none;
     }
-    h1, h2, h3 {
+    .block-container {
+        max-width: 1280px;
+        padding-top: 1.35rem;
+        padding-bottom: 2.5rem;
+    }
+    h1, h2, h3, h4 {
         color: var(--ink);
         letter-spacing: 0;
     }
+    h4 {
+        font-size: 1.08rem;
+        margin-top: 0.35rem;
+        margin-bottom: 0.65rem;
+    }
     h1 {
-        font-size: 2.15rem;
-        margin-bottom: 0.2rem;
+        font-size: 2rem;
+        line-height: 1.05;
+        margin-bottom: 0.05rem;
+        margin-top: 0;
+    }
+    .product-kicker {
+        color: var(--teal-dark);
+        font-size: 0.76rem;
+        font-weight: 700;
+        margin-bottom: 0.18rem;
+    }
+    .product-name {
+        color: var(--ink);
+        font-size: 2rem;
+        font-weight: 760;
+        line-height: 1.05;
+        letter-spacing: 0;
+    }
+    .product-subtitle {
+        color: var(--muted);
+        font-size: 0.94rem;
+        margin-top: 0.42rem;
+    }
+    .live-status {
+        color: var(--ink-soft);
+        font-size: 0.82rem;
+        text-align: right;
+        white-space: nowrap;
+    }
+    .live-dot {
+        background: var(--green);
+        border-radius: 50%;
+        display: inline-block;
+        height: 0.52rem;
+        margin-right: 0.42rem;
+        width: 0.52rem;
+    }
+    .header-rule {
+        border-bottom: 1px solid var(--line);
+        margin: 0.75rem 0 0.25rem;
     }
     [data-testid="stMetric"] {
         background: var(--panel);
         border: 1px solid var(--line);
         border-radius: 6px;
+        min-height: 6.2rem;
         padding: 0.85rem 1rem;
     }
     [data-testid="stMetricLabel"] {
@@ -78,10 +151,53 @@ st.markdown(
     }
     [data-testid="stSidebar"] {
         border-right: 1px solid var(--line);
-        background: #f6f8f9;
+        background: #f5f7f7;
+    }
+    [data-testid="stSidebar"] [data-testid="stImage"] {
+        margin-bottom: 0.35rem;
+    }
+    .sidebar-brand {
+        color: var(--ink);
+        font-size: 1.18rem;
+        font-weight: 750;
+    }
+    .sidebar-subtitle {
+        color: var(--muted);
+        font-size: 0.79rem;
+        line-height: 1.5;
+        margin-top: 0.25rem;
+    }
+    .sidebar-stats {
+        border-bottom: 1px solid var(--line);
+        border-top: 1px solid var(--line);
+        margin: 1.15rem 0;
+        padding: 0.35rem 0;
+    }
+    .sidebar-stat {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        min-height: 2.7rem;
+    }
+    .sidebar-stat + .sidebar-stat {
+        border-top: 1px solid #e5eaec;
+    }
+    .sidebar-stat-label {
+        color: var(--muted);
+        font-size: 0.78rem;
+    }
+    .sidebar-stat-value {
+        color: var(--ink);
+        font-size: 1.02rem;
+        font-weight: 720;
+    }
+    .sidebar-version {
+        color: var(--muted);
+        font-size: 0.74rem;
+        margin-top: 1.25rem;
     }
     [data-baseweb="tab-list"] {
-        gap: 1.4rem;
+        gap: 1.6rem;
         border-bottom: 1px solid var(--line);
     }
     [data-baseweb="tab"] {
@@ -89,16 +205,93 @@ st.markdown(
         padding-left: 0;
         padding-right: 0;
     }
+    [data-baseweb="tab"] p {
+        font-size: 0.9rem;
+        font-weight: 650;
+    }
+    [data-baseweb="tab-highlight"] {
+        background-color: var(--teal);
+    }
+    [data-testid="stSegmentedControl"] button {
+        border-radius: 4px;
+    }
+    [data-baseweb="select"] > div,
+    [data-baseweb="input"] > div,
+    [data-testid="stTextArea"] textarea {
+        background: #fbfcfc;
+        border-color: var(--line);
+        border-radius: 5px;
+    }
+    [data-testid="stTextArea"] textarea:focus,
+    [data-baseweb="input"] input:focus {
+        border-color: var(--teal);
+    }
+    .case-meta {
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin: 0.2rem 0 0.95rem;
+    }
+    .case-meta strong {
+        color: var(--ink-soft);
+        font-weight: 680;
+    }
+    .material-panel {
+        background: #fbfcfc;
+        border: 1px solid var(--line);
+        border-left: 3px solid var(--line-strong);
+        border-radius: 5px;
+        margin-bottom: 0.72rem;
+        padding: 0.82rem 0.95rem;
+    }
+    .material-panel.answer {
+        border-left-color: var(--teal);
+    }
+    .material-panel.reference {
+        border-left-color: var(--blue);
+    }
+    .material-label {
+        color: var(--muted);
+        font-size: 0.72rem;
+        font-weight: 700;
+        margin-bottom: 0.36rem;
+    }
+    .material-content {
+        color: var(--ink-soft);
+        font-size: 0.89rem;
+        line-height: 1.7;
+        white-space: pre-wrap;
+    }
+    .source-line {
+        color: var(--muted);
+        font-size: 0.74rem;
+        margin: 0.2rem 0 1rem;
+    }
+    .score-summary {
+        align-items: baseline;
+        border-top: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.85rem;
+        padding-top: 0.75rem;
+    }
+    .score-summary-label {
+        color: var(--muted);
+        font-size: 0.78rem;
+    }
+    .score-summary-value {
+        color: var(--ink);
+        font-size: 1.25rem;
+        font-weight: 760;
+    }
     .status-ok {
         color: var(--green);
+        font-size: 0.8rem;
         font-weight: 700;
     }
     .status-review {
         color: var(--coral);
+        font-size: 0.8rem;
         font-weight: 700;
-    }
-    .muted {
-        color: var(--muted);
     }
     .evidence-boundary {
         border-top: 1px solid var(--line);
@@ -109,12 +302,24 @@ st.markdown(
     }
     @media (max-width: 760px) {
         .block-container {
-            padding-top: 1rem;
+            padding-top: 0.8rem;
             padding-left: 1rem;
             padding-right: 1rem;
         }
-        h1 {
-            font-size: 1.8rem;
+        .product-name {
+            font-size: 1.7rem;
+        }
+        .live-status {
+            text-align: left;
+        }
+        [data-baseweb="tab-list"] {
+            gap: 1rem;
+        }
+        [data-baseweb="tab"] p {
+            font-size: 0.82rem;
+        }
+        .material-content {
+            font-size: 0.84rem;
         }
     }
     </style>
@@ -146,30 +351,57 @@ def average_score(record: dict[str, Any]) -> float:
     return sum(record["scores"].values()) / len(record["scores"])
 
 
+def render_material_panel(label: str, content: str, panel_class: str = "") -> None:
+    safe_label = escape(label)
+    safe_content = escape(content or "未提供")
+    st.markdown(
+        f"""
+        <div class="material-panel {panel_class}">
+            <div class="material-label">{safe_label}</div>
+            <div class="material-content">{safe_content}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def render_case_context(case: dict[str, Any]) -> None:
     st.markdown("#### 评测材料")
-    st.text_area(
-        "用户问题",
-        value=case.get("prompt", ""),
-        height=105,
-        key=f"prompt-{case['case_id']}",
+    domain = DOMAIN_LABELS.get(case.get("domain", ""), case.get("domain", "通用"))
+    difficulty = DIFFICULTY_LABELS.get(
+        case.get("difficulty", ""),
+        case.get("difficulty", "未分级"),
     )
-    st.text_area(
-        "模型回答",
-        value=case.get("candidate_answer", ""),
-        height=135,
-        key=f"candidate-{case['case_id']}",
+    review_status = (
+        "已人工复核"
+        if case.get("review_status") == "human_reviewed"
+        else "待复核"
     )
-    st.text_area(
-        "参考答案",
-        value=case.get("reference_answer", ""),
-        height=135,
-        key=f"reference-{case['case_id']}",
+    st.markdown(
+        f"""
+        <div class="case-meta">
+            <strong>{escape(case["case_id"])}</strong>
+            &nbsp;·&nbsp; {escape(domain)}
+            &nbsp;·&nbsp; {escape(difficulty)}
+            &nbsp;·&nbsp; {review_status}
+        </div>
+        """,
+        unsafe_allow_html=True,
     )
+    render_material_panel("用户问题", case.get("prompt", ""))
+    render_material_panel("模型回答", case.get("candidate_answer", ""), "answer")
+    render_material_panel("参考答案", case.get("reference_answer", ""), "reference")
     if case.get("sources"):
         source = case["sources"][0]
         pages = "、".join(str(page) for page in source.get("pages", []))
-        st.caption(f"来源：{source.get('file', '未提供')} · 第 {pages} 页")
+        st.markdown(
+            f"""
+            <div class="source-line">
+                来源：{escape(source.get("file", "未提供"))} · 第 {escape(pages)} 页
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 
 def render_score_controls(
@@ -216,8 +448,17 @@ def render_score_controls(
     )
     status_class = "status-review" if mandatory_review or manual_review else "status-ok"
     status_text = "需要人工复核" if mandatory_review or manual_review else "可直接归档"
+    score_average = sum(scores.values()) / len(scores)
     st.markdown(
-        f'<p class="{status_class}">{status_text}</p>',
+        f"""
+        <div class="score-summary">
+            <div>
+                <div class="score-summary-label">当前平均分</div>
+                <div class="score-summary-value">{score_average:.2f}</div>
+            </div>
+            <div class="{status_class}">{status_text}</div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
     return scores, tags, confidence, manual_review
@@ -279,7 +520,11 @@ def render_single_evaluation(
         }
     else:
         case_labels = {
-            item["case_id"]: f"{item['case_id']} · {item['domain']} · {item['difficulty']}"
+            item["case_id"]: (
+                f"{item['case_id']} · "
+                f"{DOMAIN_LABELS.get(item['domain'], item['domain'])} · "
+                f"{DIFFICULTY_LABELS.get(item['difficulty'], item['difficulty'])}"
+            )
             for item in cases
         }
         selected_id = st.selectbox(
@@ -289,7 +534,7 @@ def render_single_evaluation(
         )
         case = next(item for item in cases if item["case_id"] == selected_id)
         default_record = reviewed_by_id[selected_id]
-        st.caption("当前预填内容来自已人工复核的课程样例。")
+        st.caption("已人工复核课程样例 · 评分与证据可继续编辑")
 
     left, right = st.columns([1.2, 1], gap="large")
     key_prefix = f"single-{case['case_id']}"
@@ -424,7 +669,13 @@ def render_batch_analysis(
             }
             for dimension, value in summary["average_scores"].items()
         ]
-        st.bar_chart(score_rows, x="维度", y="平均分", horizontal=True)
+        st.bar_chart(
+            score_rows,
+            x="维度",
+            y="平均分",
+            color="#087f78",
+            horizontal=True,
+        )
     with chart_right:
         st.markdown("#### 错误分布")
         if summary["error_tag_counts"]:
@@ -435,7 +686,7 @@ def render_batch_analysis(
                 }
                 for tag, count in summary["error_tag_counts"].items()
             ]
-            st.bar_chart(tag_rows, x="标签", y="数量")
+            st.bar_chart(tag_rows, x="标签", y="数量", color="#d15d46")
         else:
             st.success("当前数据没有记录明显错误标签。")
 
@@ -581,22 +832,73 @@ def render_review_queue(
 stem_cases, stem_evaluations, sample_evaluations = load_project_data()
 
 with st.sidebar:
-    st.markdown("## EvalFlow")
-    st.caption("LLM 回答质量评测与人工复核")
-    st.divider()
-    st.metric("专业案例", len(stem_cases))
-    st.metric(
-        "人工复核覆盖",
-        f"{sum(case.get('review_status') == 'human_reviewed' for case in stem_cases)}/{len(stem_cases)}",
+    st.image(str(BRAND_MARK_PATH), width=44)
+    st.markdown(
+        """
+        <div class="sidebar-brand">EvalFlow</div>
+        <div class="sidebar-subtitle">LLM 回答质量评测<br>与人工复核工作台</div>
+        """,
+        unsafe_allow_html=True,
     )
-    st.metric("评分维度", len(DIMENSION_LABELS))
-    st.divider()
+    reviewed_count = sum(
+        case.get("review_status") == "human_reviewed" for case in stem_cases
+    )
+    st.markdown(
+        f"""
+        <div class="sidebar-stats">
+            <div class="sidebar-stat">
+                <span class="sidebar-stat-label">专业案例</span>
+                <span class="sidebar-stat-value">{len(stem_cases)}</span>
+            </div>
+            <div class="sidebar-stat">
+                <span class="sidebar-stat-label">复核覆盖</span>
+                <span class="sidebar-stat-value">{reviewed_count}/{len(stem_cases)}</span>
+            </div>
+            <div class="sidebar-stat">
+                <span class="sidebar-stat-label">评分维度</span>
+                <span class="sidebar-stat-value">{len(DIMENSION_LABELS)}</span>
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     st.markdown("**评测原则**")
     st.caption("证据优先 · 规则透明 · 风险升级 · 人工可控")
+    st.link_button(
+        "GitHub 仓库",
+        "https://github.com/LazyS1a/llm-response-evaluator",
+        icon=":material/code:",
+        width="stretch",
+    )
+    st.markdown(
+        f'<div class="sidebar-version">Version {escape(APP_VERSION)} · Public demo</div>',
+        unsafe_allow_html=True,
+    )
 
-st.title("EvalFlow")
+header_logo, header_copy, header_status = st.columns(
+    [0.07, 0.71, 0.22],
+    vertical_alignment="center",
+)
+with header_logo:
+    st.image(str(BRAND_MARK_PATH), width=58)
+with header_copy:
+    st.markdown('<div class="product-kicker">RESPONSE QUALITY LAB</div>', unsafe_allow_html=True)
+    st.title("EvalFlow")
+    st.markdown(
+        '<div class="product-subtitle">透明规则驱动的 LLM 回答评测与人工复核工作台</div>',
+        unsafe_allow_html=True,
+    )
+with header_status:
+    st.markdown(
+        f"""
+        <div class="live-status">
+            <span class="live-dot"></span>Public demo · v{escape(APP_VERSION)}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 st.markdown(
-    '<p class="muted">LLM 回答质量评测与人工复核工作台</p>',
+    '<div class="header-rule"></div>',
     unsafe_allow_html=True,
 )
 
@@ -616,7 +918,7 @@ with tab_review:
 st.markdown(
     """
     <div class="evidence-boundary">
-    当前页面不调用真实模型 API。内置天气学结果来自已人工复核样例；
+    <strong>证据边界</strong> · 当前页面不调用真实模型 API。内置天气学结果来自已人工复核样例；
     自定义结果由评测人员填写并通过确定性规则校验，不用于宣称模型准确率或线上效果。
     </div>
     """,

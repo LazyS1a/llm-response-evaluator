@@ -1,7 +1,7 @@
 # LLM Response Evaluator
 
 [![Tests](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml/badge.svg)](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml)
-[![Version](https://img.shields.io/badge/version-v0.2.0-2F7D55)](https://github.com/LazyS1a/llm-response-evaluator/blob/main/CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v0.2.1-2F7D55)](https://github.com/LazyS1a/llm-response-evaluator/blob/main/CHANGELOG.md)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-EvalFlow-087F78)](https://evalflow-llm-evaluator.streamlit.app)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
@@ -43,6 +43,7 @@ Skill 负责依据规则判断回答质量；确定性的 Python 脚本负责格
 - **批量分析**：读取 JSON / JSONL，查看维度均分、通过数量、错误分布和低分案例。
 - **人工复核**：集中处理强制复核案例，修改评分并导出复核后的 JSONL。
 - **结果导出**：下载结构化 JSON、汇总 JSON、Markdown 报告和复核数据集。
+- **专业界面**：统一品牌视觉、只读评测材料、中文领域标签和响应式移动端布局。
 
 内置评测只作为已人工复核的界面演示，不调用真实模型 API，也不宣称模型效果。
 
@@ -79,7 +80,7 @@ python -m streamlit run streamlit_app.py
 
 ## 版本与更新
 
-- 当前版本：**v0.2.0**
+- 当前版本：**v0.2.1**
 - 完整变更记录：[CHANGELOG.md](CHANGELOG.md)
 - 版本号遵循语义化版本：新增兼容功能升级次版本，破坏性变更升级主版本。
 
@@ -91,6 +92,7 @@ llm-response-evaluator/
 ├── .streamlit/config.toml
 ├── CHANGELOG.md
 ├── VERSION
+├── assets/evalflow-mark.png
 ├── app_core.py
 ├── streamlit_app.py
 ├── requirements.txt

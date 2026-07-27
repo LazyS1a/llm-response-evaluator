@@ -2,6 +2,20 @@
 
 本项目采用[语义化版本](https://semver.org/lang/zh-CN/)记录 Skill、评测工具链与 EvalFlow Web 工作台的重要变化。
 
+## [0.2.1] - 2026-07-28
+
+### 变更
+
+- 增加 EvalFlow 品牌图标，并重做工作台标题区与紧凑侧栏。
+- 内置案例改为只读评测材料面板，用户问题、模型回答和参考答案更易扫描。
+- 专业领域与难度使用中文标签，统一评分状态、图表和操作按钮的视觉语义。
+- 优化桌面端与移动端响应式布局，减少默认 Streamlit 界面感。
+
+### 兼容性
+
+- 五维评分规则、人工复核逻辑、数据结构和导出格式保持不变。
+- 自动测试仍为 30 项。
+
 ## [0.2.0] - 2026-07-28
 
 ### 新增
@@ -35,5 +49,6 @@
 - Prompt V1 / V2 模板、20 条成对模拟输出和对比报告。
 - 21 项自动测试及 GitHub Actions。
 
+[0.2.1]: https://github.com/LazyS1a/llm-response-evaluator/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/LazyS1a/llm-response-evaluator/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/LazyS1a/llm-response-evaluator/tree/v0.1.0
