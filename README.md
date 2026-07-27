@@ -1,6 +1,7 @@
 # LLM Response Evaluator
 
 [![Tests](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml/badge.svg)](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml)
+[![Version](https://img.shields.io/badge/version-v0.2.0-2F7D55)](https://github.com/LazyS1a/llm-response-evaluator/blob/main/CHANGELOG.md)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-EvalFlow-087F78)](https://evalflow-llm-evaluator.streamlit.app)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
@@ -17,7 +18,7 @@
 | 专业数据 | 10 条 PDF 页码可追溯的天气学 / STEM 样例，已全部人工复核 |
 | Web 工作台 | 单条评测、批量统计、复核队列与 JSON / JSONL / Markdown 导出 |
 | Prompt 实验 | V1 / V2 模板、20 条成对模拟输出和自动对比报告 |
-| 工程验证 | 29 项自动测试，GitHub Actions 覆盖 Python 3.10 与 3.12 |
+| 工程验证 | 30 项自动测试，GitHub Actions 覆盖 Python 3.10 与 3.12 |
 
 ## 评测流程
 
@@ -73,12 +74,20 @@ python -m streamlit run streamlit_app.py
 
 其中 Prompt V1 / V2 数据是透明标注的流程演示，用于验证成对输出、评分和汇总链路，不代表真实模型基准成绩。
 
+## 版本与更新
+
+- 当前版本：**v0.2.0**
+- 完整变更记录：[CHANGELOG.md](CHANGELOG.md)
+- 版本号遵循语义化版本：新增兼容功能升级次版本，破坏性变更升级主版本。
+
 ## 项目结构
 
 ```text
 llm-response-evaluator/
 ├── .github/workflows/tests.yml
 ├── .streamlit/config.toml
+├── CHANGELOG.md
+├── VERSION
 ├── app_core.py
 ├── streamlit_app.py
 ├── requirements.txt
