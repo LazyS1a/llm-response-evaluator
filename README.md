@@ -1,6 +1,7 @@
 # LLM Response Evaluator
 
 [![Tests](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml/badge.svg)](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-EvalFlow-087F78)](https://evalflow-llm-evaluator.streamlit.app)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
 
@@ -34,6 +35,10 @@ flowchart LR
 Skill 负责依据规则判断回答质量；确定性的 Python 脚本负责格式校验、复核规则检查、数据集管理和批量汇总。
 
 ## EvalFlow Web 工作台
+
+在线体验：<https://evalflow-llm-evaluator.streamlit.app>
+
+本地运行：
 
 ```powershell
 python -m pip install -r requirements.txt
@@ -160,7 +165,6 @@ python skills/llm-response-evaluator/scripts/compare_prompt_versions.py `
 
 ## 后续升级
 
-- 部署公开可访问的 Streamlit Demo。
 - 接入真实模型原始输出进行盲测对比。
 - 增加 CSV 导入导出。
 - 记录双人标注差异与一致性。
