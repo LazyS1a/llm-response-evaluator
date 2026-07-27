@@ -1,24 +1,61 @@
 # LLM Response Evaluator
 
-一个面向 AI 训练师、LLM 评测和 AI 产品测试场景的 Codex Skill 项目。它使用透明的五维评分规则审查模型回答，输出可校验的结构化 JSON，并通过纯 Python 脚本汇总整批评测结果。
+[![Tests](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml/badge.svg)](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![Standard Library](https://img.shields.io/badge/dependencies-standard%20library-success)
 
-## 解决什么问题
+面向 AI 训练师、LLM 评测和 AI 产品测试场景的 Codex Skill 项目。它将“这段回答好不好”转化为可解释、可校验、可批量统计的结构化评测流程。
 
-大模型回答经常出现答非所问、事实错误、遗漏要求、格式违规和引用错位。只写一句“回答不好”无法支持复盘和迭代，本项目把评价拆成统一维度、错误标签、证据说明和人工复核规则。
+## 30 秒速览
+
+| 项目证据 | 当前实现 |
+| --- | --- |
+| 评分规则 | 相关性、事实性、完整性、指令遵循、清晰度五维 1-5 分 |
+| 错误分析 | 9 类错误标签，覆盖幻觉、信息遗漏、指令违规和引用错位等问题 |
+| 人工复核 | 低置信度、低事实性和高风险案例自动进入人工确认 |
+| 专业数据 | 10 条 PDF 页码可追溯的天气学 / STEM 样例，已全部人工复核 |
+| Prompt 实验 | V1 / V2 模板、20 条成对模拟输出和自动对比报告 |
+| 工程验证 | 21 项单元测试，GitHub Actions 覆盖 Python 3.10 与 3.12 |
+
+## 评测流程
+
+```mermaid
+flowchart LR
+    A["问题、模型回答、参考资料"] --> B["五维评分"]
+    B --> C["错误标签与证据"]
+    C --> D{"触发复核规则？"}
+    D -->|是| E["人工复核"]
+    D -->|否| F["结构化 JSON"]
+    E --> F
+    F --> G["批量统计与报告"]
+```
+
+Skill 负责依据规则判断回答质量；确定性的 Python 脚本负责格式校验、复核规则检查、数据集管理和批量汇总。
 
 ## 核心能力
 
-- 按相关性、事实性、完整性、指令遵循和清晰度进行 1-5 分评分。
+- 对模型回答进行五维评分，并为每项判断提供可观察证据。
 - 标注幻觉、无依据声明、答非所问、信息遗漏、指令违规和引用错位等错误。
-- 对低置信度、低事实性和高风险案例自动要求人工复核。
-- 校验单条 JSON 或批量 JSONL 的字段、分数、标签与复核逻辑。
+- 对低置信度、低事实性、安全风险和引用错位案例强制要求人工复核。
+- 校验单条 JSON 或批量 JSONL 的字段、分数、标签和复核逻辑。
 - 汇总维度均分、通过数量、人工复核数量、错误标签和低分案例。
-- 提供 10 条带 PDF 页码依据的天气学 / STEM 评测样例和人工复核表。
+- 从专业 PDF 构造保留文件名与页码的可追溯评测样例。
+- 管理 Prompt 版本、成对输出，并自动生成 V1 / V2 对比报告。
+
+## 可查看的结果
+
+- [通用样例评测报告](outputs/sample_report.md)
+- [天气学 / STEM 人工复核表](outputs/stem_human_review.md)
+- [模拟 Prompt V1 / V2 对比报告](outputs/simulated_prompt_comparison.md)
+- [数据集覆盖统计](outputs/stem_coverage.json)
+
+其中 Prompt V1 / V2 数据是透明标注的流程演示，用于验证成对输出、评分和汇总链路，不代表真实模型基准成绩。
 
 ## 项目结构
 
 ```text
 llm-response-evaluator/
+├── .github/workflows/tests.yml
 ├── skills/llm-response-evaluator/
 │   ├── SKILL.md
 │   ├── agents/openai.yaml
@@ -35,17 +72,11 @@ llm-response-evaluator/
 │       ├── compare_prompt_versions.py
 │       └── summarize_evaluations.py
 ├── data/
-│   ├── sample_evaluations.jsonl
-│   ├── stem_cases.jsonl
-│   └── stem_draft_evaluations.jsonl
 ├── experiments/
-│   ├── prompt-v1-question-only.txt
-│   └── prompt-v2-reference-guided.txt
-├── examples/evaluation-input.md
-├── sources/meteorology_source_index.md
+├── examples/
 ├── outputs/
-├── tests/
-└── README.md
+├── sources/
+└── tests/
 ```
 
 ## 快速验证
@@ -53,8 +84,21 @@ llm-response-evaluator/
 项目仅依赖 Python 3.10+ 标准库。
 
 ```powershell
-python skills/llm-response-evaluator/scripts/validate_evaluations.py data/sample_evaluations.jsonl
+python -m unittest discover -s tests -v
 
+python skills/llm-response-evaluator/scripts/validate_evaluations.py `
+  data/sample_evaluations.jsonl
+
+python skills/llm-response-evaluator/scripts/summarize_evaluations.py `
+  data/sample_evaluations.jsonl `
+  --json-out outputs/sample_summary.json `
+  --markdown-out outputs/sample_report.md
+```
+
+<details>
+<summary>展开完整 STEM 与 Prompt 实验命令</summary>
+
+```powershell
 python skills/llm-response-evaluator/scripts/validate_stem_cases.py `
   data/stem_cases.jsonl `
   --coverage-out outputs/stem_coverage.json
@@ -63,10 +107,6 @@ python skills/llm-response-evaluator/scripts/build_stem_review_sheet.py `
   data/stem_cases.jsonl `
   data/stem_draft_evaluations.jsonl `
   --output outputs/stem_human_review.md
-
-python skills/llm-response-evaluator/scripts/mark_stem_review.py `
-  data/stem_cases.jsonl stem-001 stem-002 `
-  --status human_reviewed
 
 python skills/llm-response-evaluator/scripts/build_prompt_simulation.py `
   data/stem_cases.jsonl `
@@ -78,14 +118,9 @@ python skills/llm-response-evaluator/scripts/compare_prompt_versions.py `
   outputs/simulated_prompt_evaluations.jsonl `
   --json-out outputs/simulated_prompt_comparison.json `
   --markdown-out outputs/simulated_prompt_comparison.md
-
-python skills/llm-response-evaluator/scripts/summarize_evaluations.py `
-  data/sample_evaluations.jsonl `
-  --json-out outputs/sample_summary.json `
-  --markdown-out outputs/sample_report.md
-
-python -m unittest discover -s tests -v
 ```
+
+</details>
 
 ## 在 Codex 中使用
 
@@ -95,23 +130,16 @@ python -m unittest discover -s tests -v
 使用 $llm-response-evaluator，根据给定参考资料评测这段模型回答，并返回结构化 JSON。
 ```
 
-Skill 负责依据规则判断答案；Python 脚本只做确定性的格式校验与批量统计，不会调用外部模型或读取 API Key。
-
-天气学 / STEM 数据集的候选答案是为了校验流程而写的合成样例。它可以展示来源追踪、错误分类和人工复核流程，但不能当作真实模型排行榜。把真实模型输出替换进去之前，应记录模型名称、日期、提示词版本和原始回答。
-
-`experiments` 中还提供一个透明标注的 Prompt V1/V2 模拟实验：V1 使用预先编写的混合质量候选答案，V2 使用人工复核参考答案。它只验证成对输出、评分和对比报告流程，不能证明任何真实模型获得效果提升。
-
 ## 证据边界
 
-- 样例报告只能说明评测流程可运行，不能证明某个模型的真实准确率。
-- 当前样例是用于验证工具链的合成案例，不代表生产数据或用户规模。
+- 当前数据用于验证评测工具链，不代表生产数据、真实用户规模或线上业务效果。
 - 天气学参考答案来自本地课程 PDF 的页码级核对，原 PDF 不随仓库分发。
-- 高风险、低置信度或引用冲突案例必须人工复核。
-- 当前版本没有实时模型 API、Web 界面或生产部署。
+- 模拟 Prompt 对比不能用于宣称真实模型准确率或效果提升。
+- 当前版本不包含实时模型 API、Web 界面或生产部署。
 
 ## 后续升级
 
-- 将 Markdown 人工复核表升级为轻量评审页面和 CSV 导入导出。
-- 记录双人标注差异和一致性。
-- 接入用户自选模型进行盲测对比。
+- 接入真实模型原始输出进行盲测对比。
+- 增加 CSV 导入导出和轻量人工评审页面。
+- 记录双人标注差异与一致性。
 - 增加按任务类型配置的评分规则。
