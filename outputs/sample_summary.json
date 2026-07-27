@@ -1,0 +1,61 @@
+{
+  "total_cases": 6,
+  "average_scores": {
+    "relevance": 4.167,
+    "factuality": 3.167,
+    "completeness": 3.5,
+    "instruction_following": 4,
+    "clarity": 4.167
+  },
+  "average_overall_score": 3.8,
+  "pass_threshold": 4.0,
+  "passed_cases": 2,
+  "human_review_cases": 3,
+  "error_tag_counts": {
+    "citation_mismatch": 1,
+    "hallucination": 1,
+    "incomplete": 1,
+    "instruction_violation": 1,
+    "unclear": 1,
+    "unsupported_claim": 2
+  },
+  "lowest_scoring_cases": [
+    {
+      "case_id": "case-006",
+      "overall_score": 3.2,
+      "error_tags": [
+        "unsupported_claim",
+        "unclear"
+      ]
+    },
+    {
+      "case_id": "case-003",
+      "overall_score": 3.4,
+      "error_tags": [
+        "hallucination"
+      ]
+    },
+    {
+      "case_id": "case-004",
+      "overall_score": 3.4,
+      "error_tags": [
+        "instruction_violation",
+        "incomplete"
+      ]
+    },
+    {
+      "case_id": "case-005",
+      "overall_score": 3.4,
+      "error_tags": [
+        "citation_mismatch"
+      ]
+    },
+    {
+      "case_id": "case-002",
+      "overall_score": 4.4,
+      "error_tags": [
+        "unsupported_claim"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "experiment_type": "simulated_prompt_ab_workflow",
+  "disclaimer": "This is a transparent simulation fixture, not a live model benchmark or evidence of production improvement.",
+  "v1_question_only": {
+    "cases": 10,
+    "overall_average": 4.12,
+    "dimension_averages": {
+      "relevance": 5.0,
+      "factuality": 2.7,
+      "completeness": 3.5,
+      "instruction_following": 5.0,
+      "clarity": 4.4
+    },
+    "human_review_cases": 6,
+    "material_error_cases": 6,
+    "error_tag_counts": {
+      "hallucination": 6,
+      "incomplete": 1
+    }
+  },
+  "v2_reference_guided": {
+    "cases": 10,
+    "overall_average": 5.0,
+    "dimension_averages": {
+      "relevance": 5.0,
+      "factuality": 5.0,
+      "completeness": 5.0,
+      "instruction_following": 5.0,
+      "clarity": 5.0
+    },
+    "human_review_cases": 0,
+    "material_error_cases": 0,
+    "error_tag_counts": {}
+  },
+  "delta_v2_minus_v1": {
+    "overall_average": 0.88,
+    "dimension_averages": {
+      "relevance": 0.0,
+      "factuality": 2.3,
+      "completeness": 1.5,
+      "instruction_following": 0.0,
+      "clarity": 0.6
+    },
+    "human_review_cases": -6,
+    "material_error_cases": -6
+  }
+}

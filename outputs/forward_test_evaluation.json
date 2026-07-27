@@ -1,0 +1,22 @@
+{
+  "case_id": "evaluation-input",
+  "scores": {
+    "relevance": 5,
+    "factuality": 1,
+    "completeness": 5,
+    "instruction_following": 5,
+    "clarity": 5
+  },
+  "error_tags": [
+    "hallucination"
+  ],
+  "evidence": [
+    "The answer states \"包含\", but the reference says offline mode is available only in the professional plan.",
+    "The claim that the basic plan works without a network and synchronizes afterward is invented and contradicts the reference."
+  ],
+  "rationale": "The response is relevant, concise, and follows the requested format, but its central claim and supporting basis directly contradict the supplied reference.",
+  "confidence": 0.99,
+  "human_review_required": true,
+  "suggested_revision": "不包含。参考资料说明离线模式仅在专业套餐中提供。"
+}
+

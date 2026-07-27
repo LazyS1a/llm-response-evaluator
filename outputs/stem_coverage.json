@@ -1,0 +1,20 @@
+{
+  "domains": {
+    "atmospheric_moisture": 2,
+    "atmospheric_stability": 1,
+    "finite_difference": 2,
+    "temperature_humidity": 2,
+    "velocity_potential_streamfunction": 1,
+    "wind_kinematics": 2
+  },
+  "difficulty": {
+    "basic": 4,
+    "intermediate": 6
+  },
+  "answer_origin": {
+    "synthetic_fixture": 10
+  },
+  "review_status": {
+    "human_reviewed": 10
+  }
+}

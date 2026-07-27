@@ -1,0 +1,4 @@
+interface:
+  display_name: "LLM Response Evaluator"
+  short_description: "Evaluate LLM answers with a transparent quality rubric"
+  default_prompt: "Use $llm-response-evaluator to evaluate this model answer and return structured JSON."

@@ -1,0 +1,56 @@
+{
+  "total_cases": 10,
+  "average_scores": {
+    "relevance": 5,
+    "factuality": 2.7,
+    "completeness": 3.5,
+    "instruction_following": 5,
+    "clarity": 4.4
+  },
+  "average_overall_score": 4.12,
+  "pass_threshold": 4.0,
+  "passed_cases": 4,
+  "human_review_cases": 6,
+  "error_tag_counts": {
+    "hallucination": 6,
+    "incomplete": 1
+  },
+  "lowest_scoring_cases": [
+    {
+      "case_id": "stem-002",
+      "overall_score": 3.4,
+      "error_tags": [
+        "hallucination"
+      ]
+    },
+    {
+      "case_id": "stem-004",
+      "overall_score": 3.4,
+      "error_tags": [
+        "hallucination",
+        "incomplete"
+      ]
+    },
+    {
+      "case_id": "stem-009",
+      "overall_score": 3.4,
+      "error_tags": [
+        "hallucination"
+      ]
+    },
+    {
+      "case_id": "stem-007",
+      "overall_score": 3.6,
+      "error_tags": [
+        "hallucination"
+      ]
+    },
+    {
+      "case_id": "stem-010",
+      "overall_score": 3.6,
+      "error_tags": [
+        "hallucination"
+      ]
+    }
+  ]
+}
