@@ -2,9 +2,9 @@
 
 [![Tests](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml/badge.svg)](https://github.com/LazyS1a/llm-response-evaluator/actions/workflows/tests.yml)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
-![Standard Library](https://img.shields.io/badge/dependencies-standard%20library-success)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
 
-面向 AI 训练师、LLM 评测和 AI 产品测试场景的 Codex Skill 项目。它将“这段回答好不好”转化为可解释、可校验、可批量统计的结构化评测流程。
+面向 AI 训练师、LLM 评测和 AI 产品测试场景的评测工具。它将“这段回答好不好”转化为可解释、可校验、可批量统计的结构化流程，并提供可操作的 Streamlit 人工复核工作台。
 
 ## 30 秒速览
 
@@ -14,8 +14,9 @@
 | 错误分析 | 9 类错误标签，覆盖幻觉、信息遗漏、指令违规和引用错位等问题 |
 | 人工复核 | 低置信度、低事实性和高风险案例自动进入人工确认 |
 | 专业数据 | 10 条 PDF 页码可追溯的天气学 / STEM 样例，已全部人工复核 |
+| Web 工作台 | 单条评测、批量统计、复核队列与 JSON / JSONL / Markdown 导出 |
 | Prompt 实验 | V1 / V2 模板、20 条成对模拟输出和自动对比报告 |
-| 工程验证 | 21 项单元测试，GitHub Actions 覆盖 Python 3.10 与 3.12 |
+| 工程验证 | 29 项自动测试，GitHub Actions 覆盖 Python 3.10 与 3.12 |
 
 ## 评测流程
 
@@ -31,6 +32,22 @@ flowchart LR
 ```
 
 Skill 负责依据规则判断回答质量；确定性的 Python 脚本负责格式校验、复核规则检查、数据集管理和批量汇总。
+
+## EvalFlow Web 工作台
+
+```powershell
+python -m pip install -r requirements.txt
+python -m streamlit run streamlit_app.py
+```
+
+打开 `http://localhost:8501` 后可使用：
+
+- **单条评测**：加载已人工复核的天气学案例，或填写自定义问题、回答和参考答案。
+- **批量分析**：读取 JSON / JSONL，查看维度均分、通过数量、错误分布和低分案例。
+- **人工复核**：集中处理强制复核案例，修改评分并导出复核后的 JSONL。
+- **结果导出**：下载结构化 JSON、汇总 JSON、Markdown 报告和复核数据集。
+
+内置评测只作为已人工复核的界面演示，不调用真实模型 API，也不宣称模型效果。
 
 ## 核心能力
 
@@ -56,6 +73,10 @@ Skill 负责依据规则判断回答质量；确定性的 Python 脚本负责格
 ```text
 llm-response-evaluator/
 ├── .github/workflows/tests.yml
+├── .streamlit/config.toml
+├── app_core.py
+├── streamlit_app.py
+├── requirements.txt
 ├── skills/llm-response-evaluator/
 │   ├── SKILL.md
 │   ├── agents/openai.yaml
@@ -81,7 +102,7 @@ llm-response-evaluator/
 
 ## 快速验证
 
-项目仅依赖 Python 3.10+ 标准库。
+核心校验与汇总脚本仅依赖 Python 3.10+ 标准库；Web 工作台使用 Streamlit。
 
 ```powershell
 python -m unittest discover -s tests -v
@@ -135,11 +156,12 @@ python skills/llm-response-evaluator/scripts/compare_prompt_versions.py `
 - 当前数据用于验证评测工具链，不代表生产数据、真实用户规模或线上业务效果。
 - 天气学参考答案来自本地课程 PDF 的页码级核对，原 PDF 不随仓库分发。
 - 模拟 Prompt 对比不能用于宣称真实模型准确率或效果提升。
-- 当前版本不包含实时模型 API、Web 界面或生产部署。
+- Web 工作台不调用实时模型 API，自定义结果由评测人员填写并通过确定性规则校验。
 
 ## 后续升级
 
+- 部署公开可访问的 Streamlit Demo。
 - 接入真实模型原始输出进行盲测对比。
-- 增加 CSV 导入导出和轻量人工评审页面。
+- 增加 CSV 导入导出。
 - 记录双人标注差异与一致性。
 - 增加按任务类型配置的评分规则。
