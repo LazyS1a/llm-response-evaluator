@@ -6,7 +6,7 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.40%2B-FF4B4B?logo=streamlit&logoColor=white)
 
-面向 AI 训练师、LLM 评测和 AI 产品测试场景的评测工具。它将“这段回答好不好”转化为可解释、可校验、可批量统计的结构化流程，并提供可操作的 Streamlit 人工复核工作台。
+面向 AI 训练师、LLM 评测和 AI 产品测试场景的评测工具。它将“这段回答好不好”转化为可解释、可校验、可批量统计的结构化流程，并提供可操作的 Streamlit 人工复核工作台。skill版本也提供使用
 
 ## 30 秒速览
 
